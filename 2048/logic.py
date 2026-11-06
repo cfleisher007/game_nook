@@ -1,4 +1,4 @@
-import random
+import random as rd
 
 def move(board, direction):
     merged = [[False for _ in range(4)] for _ in range(4)]
@@ -6,12 +6,33 @@ def move(board, direction):
     for row_index, row in enumerate(board):
         for col_index, box in enumerate(row):
             moves = move_amount(board, direction, row_index, col_index) if box != 0 else 0
-            #move
-            if check_merge(board, merged, direction, row_index, col_index) != 0
-            #merge the two cells
-            
+            r = row_index
+            c = col_index
+            if direction in ("up", "down"):
+                board[row_index][col_index + moves] = box
+                c += moves
+            else:
+                board[row_index + moves][col_index] = box
+                r += moves
+
+            board[row_index][col_index] = 0
+
+            merge(board, merged, r, c, direction)
 
     return board
+
+def merge(board, merged, row, col, direction):
+    if check_merge(board, merged, direction, row, col) != 0:
+        dir = 1 if direction in ("up" "right") else -1
+        box = board[row][col]
+
+        if direction in ("up", "down"):
+            board[row][col + dir] = box
+        else:
+            board[row + dir][col] = box
+
+        board[row][col] == 0
+
 
 def check_merge(board, merge_board, direction, row, col):
     if ((direction == "up" and col == 0) or (direction == "down" and col == 3) 
@@ -22,9 +43,9 @@ def check_merge(board, merge_board, direction, row, col):
     dir = -1 if direction in ("up", "right") else -1
 
     if direction in ("up", "down"):
-        return (box * 2) if box == board[row][col + dir] else 0
+        return (box * 2) if (box == board[row][col + dir] and merge_board[row][col + dir] == False) else 0
     else:
-        return (box * 2) if box == board[row + dir][col] else 0
+        return (box * 2) if (box == board[row + dir][col] and merge_board[row + dir][col] == False) else 0
 
 
 
@@ -36,8 +57,8 @@ def move_amount(board, direction, row_index, col_index):
     col = (col_index + vertical_step) if direction in ("up", "down") else col_index
     length = len(board) if direction in ("right", "left") else len(board[row_index])
     
-    while 0 <= next < (length) and board[row][col]:
-        moves += 1
+    while 0 <= (row if direction in ("right", "left") else col) < length and board[row][col] == 0:
+        moves += 1 if direction in ("up", "right") else -1
         if direction in ("up", "down"):
             col += vertical_step
         else:
@@ -47,13 +68,13 @@ def move_amount(board, direction, row_index, col_index):
 
 def add_new_tile(board):
     #90% chance to add a 2, 10% chance to add a 4
-    rd = random.randint(1, 100)
+    rd = rd.randint(1, 100)
     num = 2
     if rd > 90:
         num = 4
 
     empty_boxes = get_empty_boxes(board)
-    rd_box = random.choice(empty_boxes)
+    rd_box = rd.choice(empty_boxes)
 
     box = empty_boxes[rd_box]
     board[box[0]][box[1]] = num
@@ -69,3 +90,7 @@ def get_empty_boxes(board):
                 empty_boxes.append([i, j])
 
     return empty_boxes
+
+if __name__ == "__main__":
+    test_board = [[0,0,0,0],[0,0,4,0],[8,2,0,0],[4,4,0,0]]
+    print(move(test_board, "right"))
