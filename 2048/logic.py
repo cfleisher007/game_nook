@@ -1,84 +1,50 @@
 import random as rd
 
 def move(board, direction):
-    merged = [[False for _ in range(4)] for _ in range(4)]
-
-    for row_index, row in enumerate(board):
-        for col_index, box in enumerate(row):
-            moves = move_amount(board, direction, row_index, col_index) if box != 0 else 0
-            r = row_index
-            c = col_index
-            if direction in ("up", "down"):
-                board[row_index][col_index + moves] = box
-                c += moves
-            else:
-                board[row_index + moves][col_index] = box
-                r += moves
-
-            board[row_index][col_index] = 0
-
-            merge(board, merged, r, c, direction)
-
-    return board
-
-def merge(board, merged, row, col, direction):
-    if check_merge(board, merged, direction, row, col) != 0:
-        dir = 1 if direction in ("up" "right") else -1
-        box = board[row][col]
-
-        if direction in ("up", "down"):
-            board[row][col + dir] = box
-        else:
-            board[row + dir][col] = box
-
-        board[row][col] == 0
-
-
-def check_merge(board, merge_board, direction, row, col):
-    if ((direction == "up" and col == 0) or (direction == "down" and col == 3) 
-        or (direction == "right" and row == 3) or (direction == "left" and row == 0)):
-        return 0
-
-    box = board[row][col]
-    dir = -1 if direction in ("up", "right") else -1
-
+    new_board = []
     if direction in ("up", "down"):
-        return (box * 2) if (box == board[row][col + dir] and merge_board[row][col + dir] == False) else 0
+        for c in range(4):
+            column_list = [board[r][c] for r in range(4)]
+            processed_list = slide_and_merge_line(column_list)
+            for r in range(4):
+                board[r][c] = processed_list[r]
     else:
-        return (box * 2) if (box == board[row + dir][col] and merge_board[row + dir][col] == False) else 0
+        for row_index, row in enumerate(board):
+            board[row_index] = slide_and_merge_line(row)
 
+    add_new_tile(board)
 
+def slide_and_merge_line(line):
+    non_zeros = [num for num in line if num != 0]
 
-def move_amount(board, direction, row_index, col_index):
-    moves = 0
-    horiz_step = 0 if direction not in ("right", "left") else (1 if direction == "right" else -1)
-    vertical_step = 0 if direction not in ("up", "down") else (1 if direction == "up" else -1)
-    row = (row_index + horiz_step) if direction in ("right", "left") else row_index
-    col = (col_index + vertical_step) if direction in ("up", "down") else col_index
-    length = len(board) if direction in ("right", "left") else len(board[row_index])
-    
-    while 0 <= (row if direction in ("right", "left") else col) < length and board[row][col] == 0:
-        moves += 1 if direction in ("up", "right") else -1
-        if direction in ("up", "down"):
-            col += vertical_step
+    merged = []
+    skip = False
+    for i in range(len(non_zeros)):
+        if skip:
+            skip = False
+            continue
+        if i + 1 < len(non_zeros) and non_zeros[i] == non_zeros[i + 1]:
+            merged.append(non_zeros[i] * 2)
+            skip = True
         else:
-            row += horiz_step 
+            merged.append(non_zeros[i])
 
-    return moves
+    while len(merged) < 4:
+        merged.append(0)
+
+    return merged
+
 
 def add_new_tile(board):
     #90% chance to add a 2, 10% chance to add a 4
-    rd = rd.randint(1, 100)
+    rdm = rd.randint(1, 100)
     num = 2
-    if rd > 90:
+    if rdm > 90:
         num = 4
 
     empty_boxes = get_empty_boxes(board)
     rd_box = rd.choice(empty_boxes)
-
-    box = empty_boxes[rd_box]
-    board[box[0]][box[1]] = num
-    return board
+    board[rd_box[0]][rd_box[1]] = num
 
 
 def get_empty_boxes(board):
@@ -91,6 +57,13 @@ def get_empty_boxes(board):
 
     return empty_boxes
 
-if __name__ == "__main__":
-    test_board = [[0,0,0,0],[0,0,4,0],[8,2,0,0],[4,4,0,0]]
-    print(move(test_board, "right"))
+def print_board(board):
+    string = ""
+    for row in board:
+        for box in row:
+            string += str(box)
+
+        string += " "
+    
+    print(string)
+    
