@@ -10,6 +10,7 @@ class Game2048:
 
 
     def move(self, direction):
+        has_moved = False
         if direction in ("up", "down"):
             for c in range(4):
                 column_list = [self.board[r][c] for r in range(4)]
@@ -18,6 +19,13 @@ class Game2048:
                 for r in range(4):
                     self.board[r][c] = processed_col[(r if direction == "up" else 3 - r)]
                 self.score += points
+
+                if check_2048:
+                    self.win = True
+
+                new_col = [self.board[r][c] for r in range(4)]
+                if column_list != new_col:
+                    has_moved = True
         else:
             for row_index, row in enumerate(self.board):
                 row_list = row if direction == "left" else row[::-1]
@@ -25,14 +33,18 @@ class Game2048:
                 self.board[row_index] = processed_row if direction == "left" else processed_row[::-1]
                 self.score += points
 
-        self.add_new_tile()
+                if row != self.board[row_index]:
+                    has_moved = True
+
+                if check_2048:
+                    self.win = True
+
+        if has_moved:
+            self.add_new_tile()
         
         game_over = self.is_game_over()
         if game_over:
             self.game_over = True
-
-        if check_2048:
-            self.win = True
 
 
     def is_game_over(self):
