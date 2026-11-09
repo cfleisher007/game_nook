@@ -11,6 +11,7 @@ class Mastermind:
         self.secret_code = self.generate_secret_code()
         self.board = []
         self.won = False
+        self.game_over = False
 
     def turn(self, guess):
         unmatched_guess = []
@@ -19,7 +20,7 @@ class Mastermind:
 
         for i in range(self.code_length):
             if guess[i] == self.secret_code[i]:
-                    pins.append("R")
+                pins.append("R")
             else:
                 unmatched_guess.append(guess[i])
                 unmatched_secret.append(self.secret_code[i])
@@ -41,6 +42,19 @@ class Mastermind:
         if guess == self.secret_code:
             self.won = True
 
+        if self.won or len(self.board) == self.max_turns:
+            self.game_over = True
+
+
+    def valid_guess(self, guess):
+        if len(guess) != self.code_length:
+            return False
+
+        for color in guess:
+            if color not in self.colors:
+                return False
+
+        return True
         
     def generate_secret_code(self):
         colors = self.colors[:]
