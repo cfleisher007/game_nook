@@ -1,0 +1,44 @@
+{% set is_home = True %}
+{% extends layout.html %}
+
+{% block title %}
+    Index
+{% endblock %}
+
+{% block main %}
+
+    <!-- Three column grid for game squares -->
+    <div class="row rows-cols-1 rows-cols-md-3 g-4 justify-content-center">
+
+        <div class="col">
+           <a href="/2048" class="text-decoration-none text-white">
+                <div class="card bg-dark text-white border-0 shadow position-relative overflow-hidden h-100 btn p-0 text-start">
+                    <img src="/static/images/2048 Image.png" class="card-img opacity-50 h-100 object-fit-cover" alt="2048">
+                    <div class="card-img-overlay d-flex flex-column justify-content-end p-4">
+                        <h2 class="card-title fw-extrabold m-0 tracking-tight text-uppercase">2048</h2>
+                    </div>
+                </div>
+           </a> 
+
+           <a href="/mastermind" class="text-decoration-none text-white">
+                <div class="card bg-dark text-white border-0 shadow position-relative overflow-hidden h-100 btn p-0 text-start">
+                    <img src="/static/images/Mastermind Image.png" class="card-img opacity-50 h-100 object-fit-cover" alt="2048">
+                    <div class="card-img-overlay d-flex flex-column justify-content-end p-4">
+                        <h2 class="card-title fw-extrabold m-0 tracking-tight text-uppercase">mastermind</h2>
+                    </div>
+                </div>
+           </a> 
+
+           <a href="/minesweeper" class="text-decoration-none text-white">
+                <div class="card bg-dark text-white border-0 shadow position-relative overflow-hidden h-100 btn p-0 text-start">
+                    <img src="/static/images/Minesweeper Image.png" class="card-img opacity-50 h-100 object-fit-cover" alt="2048">
+                    <div class="card-img-overlay d-flex flex-column justify-content-end p-4">
+                        <h2 class="card-title fw-extrabold m-0 tracking-tight text-uppercase">minesweeper</h2>
+                    </div>
+                </div>
+           </a> 
+        </div>
+        
+    </div>
+
+{% endblock %}
