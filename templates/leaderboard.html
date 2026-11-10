@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Leaderboard
+{% endblock %}
+
+{% block main %}
+    {% include "_dropdown.html" %}
+
+    <div class="text-center my-3">
+        <a href="#high-score" class="btn btn-primary">High Score</a>
+        <a href="#my-rank-row" class="btn btn-primary">My Score</a>
+    </div>
+    
+
+    <div id="panel-{{ game_name }}" class="tab-content">
+        {for game_name, game_scoes in scores_by_games.items() %}
+            <table id="high-score" class="table table-hover text-center shadow">
+                <thead>
+                    <tr>
+                        <th>Ranking</th>
+                        <th>Player</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for user in game %}
+                        <tr {% if user.username == session.get("username") %}id="my-rank-row" class="table-warning fw-bold border-2 border-warning"{% endif %}>
+                            <td>{{ loop.index }}</td>
+                            <td>
+                                {{ user.username }}
+                                {% if user.username == session.get("username") %}
+                                    <span class="badge bg-dark ms-1">You</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ user.score }}</td>
+                        </tr>
+                    {   % endfor %}
+                </tbody>
+            </table>
+        {% endfor %}
+    </div>
+      
+{% endblock %}
