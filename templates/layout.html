@@ -19,53 +19,26 @@
 
     <body>
 
-        <nav class="navbar navbar-dark bg-dark">
+        <nav class="navbar navbar-expand navbar-dark bg-dark">
             <div class="container-fluid">
                 <a class="navbar-brand" href="/">
                     <span class="text-primary">Game</span> <span class="text-danger">Nook</span>
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <div class="navbar-menu" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Home</a>
+                            <a class="nav-link active" aria-current="page" href="index.html">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Link</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Dropdown
-                            </a>
-                            {% if not is_home %}
-                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" href="/2048">2048</a></li>
-                                    <li><a class="dropdown-item" href="/mastermind">Mastermind</a></li>
-                                    <li><a class="dropdown-item" href="/minesweeper">Minesweeper</a></li>
-                                </ul>
-                            {% endif %}
                             {% if session["user_id"] %}
-                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    {% set name = session.get("username")}
-                                    <button type="button" class="profile-btn">{{ name[0] }}</button>
-                                </ul>
+                                {% set name = session.get("username") %}
+                                <li class="nav-item profile"><a href="/profile" class="profile-btn btn btn-light rounded-circle">{{ name[0] }}</a></li>
                             {% else %}
-                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" href="/register">Register</a></li>
-                                    <li><a class="dropdown-item" href="/login">Log in</a></li>
-                                </ul>
+                                <li><a class="nav-link" href="/register">Register</a></li>
+                                <li><a class="nav-link" href="/login">Log in</a></li>
                             {% endif %}
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
                         </li>
                     </ul>
-                    <form class="d-flex">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">Search</button>
-                    </form>
                 </div>
             </div>
         </nav>

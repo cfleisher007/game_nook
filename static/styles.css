@@ -1,0 +1,11 @@
+/*index.html*/
+.game-card 
+{
+    width: min(100%, 160px);
+    aspect-ratio: 1;
+    margin-inline: auto;
+}
+
+/*layout.html*/
+
+
