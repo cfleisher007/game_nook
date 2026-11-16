@@ -5,41 +5,48 @@
 {% endblock %}
 
 {% block main %}
-    {% include "_dropdown.html" %}
+    {% if amount == 0 %}
+        <p2 class="no-players-text">No scores yet. Be the first!</p2>
+        <a class="no-players-game-btn btn btn-light" href="/">Explore games</a>
 
-    <div class="text-center my-3">
-        <a href="#high-score" class="btn btn-primary">High Score</a>
-        <a href="#my-rank-row" class="btn btn-primary">My Score</a>
-    </div>
+    {% else %}
+        {% include "_dropdown.html" %}
+
+        <div class="text-center my-3">
+            <a href="#high-score" class="btn btn-primary">High Score</a>
+            <a href="#my-rank-row" class="btn btn-primary">My Score</a>
+        </div>
     
-
-    <div id="panel-{{ game_name }}" class="tab-content">
-        {for game_name, game_scoes in scores_by_games.items() %}
-            <table id="high-score" class="table table-hover text-center shadow">
-                <thead>
-                    <tr>
-                        <th>Ranking</th>
-                        <th>Player</th>
-                        <th>Score</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {% for user in game %}
-                        <tr {% if user.username == session.get("username") %}id="my-rank-row" class="table-warning fw-bold border-2 border-warning"{% endif %}>
-                            <td>{{ loop.index }}</td>
-                            <td>
-                                {{ user.username }}
-                                {% if user.username == session.get("username") %}
-                                    <span class="badge bg-dark ms-1">You</span>
-                                {% endif %}
-                            </td>
-                            <td>{{ user.score }}</td>
+  
+        {% for game_name, game_scores in scores_by_game.items() %}
+            <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="panel-{{ game_name }}" class="tab-content">
+                <h2 text-align: center;>{{ game_name }}</h2>
+                <table id="high-score" class="table table-hover text-center shadow">
+                    <thead>
+                        <tr>
+                            <th>Ranking</th>
+                            <th>Player</th>
+                            <th>Score</th>
                         </tr>
-                    {   % endfor %}
-                </tbody>
-            </table>
+                    </thead>
+
+                    <tbody>
+                        {% for user in game_scores %}
+                            <tr {% if user.username == session.get("username") %}id="my-rank-row" class="table-warning fw-bold border-2 border-warning"{% endif %}>
+                                <td>{{ loop.index }}</td>
+                                <td>
+                                    {{ user.username }}
+                                    {% if user.username == session.get("username") %}
+                                        <span class="badge bg-dark ms-1">You</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ user.score }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>      
         {% endfor %}
-    </div>
+    {% endif %}
       
 {% endblock %}

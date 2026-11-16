@@ -22,12 +22,15 @@
         <nav class="navbar navbar-expand navbar-dark bg-dark">
             <div class="container-fluid">
                 <a class="navbar-brand" href="/">
-                    <span class="text-primary">Game</span> <span class="text-danger">Nook</span>
+                    <span class="text-primary">Game</span><span class="text-danger">Nook</span>
                 </a>
                 <div class="navbar-menu" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                            <a class="nav-link active" aria-current="page" href="/index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/leaderboard">Leaderboard</a>
                         </li>
                         <li class="nav-item">
                             {% if session["user_id"] %}

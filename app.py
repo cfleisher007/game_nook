@@ -42,18 +42,22 @@ def save_game_state():
 
     return ("", 204)
 
+@app.route("/<game_name>")
+def game(game_name):
+    if game_name not in ["2048", "mastermind", "minesweeper"]:
+        flash("Game not found")
+        redirect("/")
 
-@app.route("/2048")
-def game_2048():
     user_id = session.get("user_id")
+    template = "game-2048.html" if game_name == "2048" else (game_name + ".html")
 
     if user_id:
-        game_data = db.execute("SELECT game_data FROM game_saves WHERE user_id = ? AND game_name = '2048'", user_id)
+        game_data = db.execute("SELECT game_data FROM game_saves WHERE user_id = ? AND game_name = ?", user_id, game_name)
         data = json.loads(game_data[0]["game_data"]) if game_data else None
-        return render_template("game-2048.html", game_data=data)
+        return render_template(template, game_data=data)
 
     else:
-        return render_template("game-2048.html", game_data=None)
+        return render_template(template, game_data=None)
 
 
 @app.route("/profile", methods=["GET", "POST"])
@@ -87,7 +91,7 @@ def delete_account():
         password = request.form.get("password")
 
         rows = db.execute("SELECT hash FROM users WHERE id = ?", user_id)
-        if password != check_password_hash(rows[0]["password"]):
+        if not check_password_hash(rows[0]["hash"], password):
             flash("Incorrect password!")
             return render_template("delete-account.html")
 
@@ -105,17 +109,17 @@ def delete_account():
 def leaderboard():
     scores_2048 = db.execute(
         "SELECT username, score FROM scores JOIN users ON scores.user_id = users.id" \
-        "WHERE game_name = '2048'ORDER by score DESC"
+        " WHERE game_name = '2048'ORDER by score DESC"
     )
 
     scores_mastermind = db.execute(
-        "SELECT username, score FROM scores JOIN users ON scores.user_id = user.id" \
-        "WHERE game_name = 'Mastermind' ORDER BY score ASC"
+        "SELECT username, score FROM scores JOIN users ON scores.user_id = users.id" \
+        " WHERE game_name = 'Mastermind' ORDER BY score ASC"
     )
 
     scores_minesweeper = db.execute(
-        "SELECT username, score FROM scores JOIN users ON scores.user_id = user.id" \
-        "WHERE game_name = 'Minesweeper' ORDER BY score ASC"
+        "SELECT username, score FROM scores JOIN users ON scores.user_id = users.id " \
+        " WHERE game_name = 'Minesweeper' ORDER BY score ASC"
     )
 
     scores_by_game = {
@@ -124,13 +128,14 @@ def leaderboard():
         "Minesweeper": scores_minesweeper
     }
 
-    return render_template("leaderboard.html", scores_by_game=scores_by_game)
+    amount = db.execute("SELECT SUM(id) AS players FROM users")
+
+    return render_template("leaderboard.html", amount=amount[0]["players"], scores_by_game=scores_by_game)
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
         username = request.form.get("username")
-        nickname = request.form.get("nickname")
         password = request.form.get("password")
         confirmation = request.form.get("confirmation")
 
@@ -152,10 +157,6 @@ def register():
 
         new_user = db.execute("SELECT id FROM users WHERE username = ?", username)
         session["user_id"] = new_user[0]["id"]
-
-        if nickname:
-            nickname_rows = db.execute("UPDATE users SET nickname = ? WHERE username = ?", nickname, username)
-            session["nickname"] = nickname
 
         flash("Registration successful!")
         return redirect("/")
@@ -188,13 +189,7 @@ def login():
             return render_template("login.html", username=username)
 
         session["user_id"] = rows[0]["id"]
-        rows = db.execute("SELECT nickname FROM users WHERE username = ?", username)
-        name = ""
-        if rows[0]["nickname"]:
-            name = rows[0]["nickname"]
-        else:
-            name = username
-        flash(f"Welcome back, {name}!")
+        flash(f"Welcome back, {username}!")
         return redirect("/")
 
     else:
@@ -223,8 +218,8 @@ def change_password():
 
         rows = db.execute("SELECT hash FROM users WHERE id = ?", user_id)
         if not check_password_hash(rows[0]["hash"], old_password):
-            flash("Please input correct password")
-            return render_template("change-password")
+            flash("Incorrect password!")
+            return render_template("change-password.html")
         if old_password == new_password:
             flash("New password cannot match old password")
             return render_template("change-password.html")
