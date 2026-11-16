@@ -1,4 +1,4 @@
-from logic import Minesweeper
+from games.minesweeper.logic_minesweeper import Minesweeper
 
 #game = Minesweeper(level)
 #only generate board after first click
