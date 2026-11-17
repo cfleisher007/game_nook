@@ -8,4 +8,23 @@
 
 /*layout.html*/
 
+/*game-2048.html*/
+.game-board-2048
+{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 10px;
+    background-color: #2d2b31;
+}
 
+.board-cell-2048
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ac9fc6;
+    border-radius: 5px;
+    font-size: 2rem;
+    font-weight: bold;
+}

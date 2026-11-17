@@ -1,0 +1,3 @@
+- [ ] if new game, import then instantiate game?
+- [ ] css grid/flexbox for each game board
+- [ ] delete game file from each game?

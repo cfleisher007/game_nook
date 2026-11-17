@@ -42,24 +42,6 @@ def save_game_state():
 
     return ("", 204)
 
-@app.route("/<game_name>")
-def game(game_name):
-    if game_name not in ["2048", "mastermind", "minesweeper"]:
-        flash("Game not found")
-        redirect("/")
-
-    user_id = session.get("user_id")
-    template = "game-2048.html" if game_name == "2048" else (game_name + ".html")
-
-    if user_id:
-        game_data = db.execute("SELECT game_data FROM game_saves WHERE user_id = ? AND game_name = ?", user_id, game_name)
-        data = json.loads(game_data[0]["game_data"]) if game_data else None
-        return render_template(template, game_data=data)
-
-    else:
-        return render_template(template, game_data=None)
-
-
 @app.route("/profile", methods=["GET", "POST"])
 @login_required
 def profile():
@@ -232,4 +214,25 @@ def change_password():
 
     else:
         return render_template("change-password.html")
+
+@app.route("/<game_name>")
+def game(game_name):
+    if game_name not in ["2048", "mastermind", "minesweeper"]:
+        flash("Game not found")
+        return redirect("/")
+
+    user_id = session.get("user_id")
+    template = "game-2048.html" if game_name == "2048" else (game_name + ".html")
+    data = None
+    
+    if user_id:
+        game_data = db.execute("SELECT game_data FROM game_saves WHERE user_id = ? AND game_name = ?", user_id, game_name)
+        if game_data:
+            data = json.loads(game_data[0]["game_data"]) 
+        score_rows = db.execute("SELECT score FROM scores WHERE user_id = ? ORDER BY score DESC LIMIT 1", user_id)
+        high_score = 0 if not score_rows else score_rows[0]["score"]
+
+        return render_template(template, high_score=high_score, data=data)      
+    else:
+        return render_template(template, high_score="0", data=None)
 

@@ -6,20 +6,31 @@
 
 {% block main %}
 
-    <div id="2048-score">
-        Score
-        {{ score }}
+    <div class="heading">
+        <div class="game-name">2048</div>
+
+        <div id="score">
+            <span class="score-label">Score</span>
+            <span class="score-value"></span>
+        </div>
+
+        <div id="high-score">
+            <span class="score-label">High score</span>
+            <span class="score-value">{{ high_score }}</span>
+        </div>
     </div>
 
-    <div id="2048-high-score">
-        High score
-        {{ high-score }}
+    <div class="game-board-2048">
+        {% for cell in range(16) %}
+            <div class="board-cell-2048"></div>
+        {% endfor %}
     </div>
 
-    <table id="2048-board" class="table text-center">
-        
-    </table>
-    
+    <script>
+        const savedGameData = JSON.parse('{{ data | tojson }}');
+    </script>
+
+    <script src="/static/js/2048.js"></script>
 
 {% endblock %}
 
