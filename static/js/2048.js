@@ -149,12 +149,60 @@ class Game2048{
 
 
 function renderBoard() {
+    let game;
     if (!savedGameData) 
     {
-        let game = Game2048(true);
+        game = new Game2048(true);
     }
     else
     {
-        let game = Game2048(false, savedGameData.board, savedGameData.score);
+        game = new Game2048(false, savedGameData.board, savedGameData.score);
+    }
+
+    drawBoard();
+}
+
+function drawBoard() {
+    const cells = document.querySelectorAll(".board-cell-2048");
+
+    for (let row = 0; row < 4; row++) {
+        for (let col = 0; col < 4; col++) {
+            const index = row * 4 + col;
+            const value = game.board[row][col];
+            cells[index].textContent = value === 0 ? "" : value;
+        }
     }
 }
+
+document.addEventListener("keydown", function(event) {
+    if (event.key === "ArrowUp") {
+        event.preventDefault();
+        game.move("up");
+        drawBoard();
+    }
+    else if (event.key === "ArrowDown") {
+        event.preventDefault();
+        game.move("down");
+        drawBoard();
+    }
+    else if (event.key === "ArrowRight") {
+        event.preventDefault();
+        game.move("right");
+        drawBoard();
+    }
+    else if(event.key === "ArrowLeft") {
+        event.preventDefault();
+        game.move("left");
+        drawBoard();
+    }
+});
+
+document.getElementById("new-game-btn").addEventListener("click", function() {
+    fetch("/delete-game-save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({game_name: "2048"})
+    });
+
+    renderBoard();
+});

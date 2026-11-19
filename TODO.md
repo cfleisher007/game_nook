@@ -1,4 +1,5 @@
-- [ ] if new game, import then instantiate game?
-- [ ] css grid/flexbox for each game board
-- [ ] delete game file from each game?
-- [ ] convert python logic to js
+- [x] if new game, import then instantiate game?
+- [x] css grid/flexbox for each game board
+- [x] delete game file from each game?
+- [x] convert python logic to js
+- [] create endgame screen with option to start new game, view leaderboard, or register if a guest

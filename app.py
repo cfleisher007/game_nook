@@ -1,5 +1,5 @@
 from cs50 import SQL
-from flask import Flask, flash, redirect, render_template, request, session
+from flask import Flask, flash, redirect, render_template, request, session, jsonify
 from flask_session import Session
 import json
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -214,6 +214,18 @@ def change_password():
 
     else:
         return render_template("change-password.html")
+
+@app.route("/delete-game-save", methods=["POST"])
+def delete_game_save():
+    user_id = session.get("user_id")
+    if not user_id:
+        return jsonify({"status": "guest"})
+
+    data = request.get_json()
+    game_name = data.get("game_name")
+
+    db.execute("DELETE FROM game_saves WHERE user_id = ? AND game_name = ?", user_id, game_name)
+    return jsonify({"status": "deleted"})
 
 @app.route("/<game_name>")
 def game(game_name):
